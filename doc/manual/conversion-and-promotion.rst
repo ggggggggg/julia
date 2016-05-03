@@ -117,9 +117,7 @@ to perform this operation, making it more explicit.
 Defining New Conversions
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-To define a new conversion, simply provide a new method for :func:`convert`.
-That's really all there is to it. For example, the method to convert a
-real number to a boolean is this::
+To define a new conversion, simply provide a new method for :func:`convert`. In most cases, you must ``import Base: convert`` or explicitly extend ``Base.convert``. That's really all there is to it. For example, the method to convert a real number to a boolean is this::
 
     convert(::Type{Bool}, x::Real) = x==0 ? false : x==1 ? true : throw(InexactError())
 
@@ -331,8 +329,12 @@ promoted to the returned type. Thus, by defining the rule::
     promote_rule(::Type{Float64}, ::Type{Float32} ) = Float64
 
 one declares that when 64-bit and 32-bit floating-point values are
-promoted together, they should be promoted to 64-bit floating-point. The
-promotion type does not need to be one of the argument types, however;
+promoted together, they should be promoted to 64-bit floating-point. 
+As with :func:`convert` and all functions defined outside the current 
+module, :func:`promote_rule` must be imported or referenced as 
+``Base.promote_rule`` before it can be extended with additional definitions. 
+The promotion type does not 
+need to be one of the argument types, however;
 the following promotion rules both occur in Julia's standard library::
 
     promote_rule(::Type{UInt8}, ::Type{Int8}) = Int
